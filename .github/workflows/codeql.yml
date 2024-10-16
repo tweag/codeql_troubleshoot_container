@@ -60,7 +60,7 @@ jobs:
         output: ./codeql/
 
     - name: List files to verify the file exists
-        run: ls -lah
+      run: ls -lah
 
     - name: Post SARIF findings in the pull request
       if: github.event_name == 'pull_request'
