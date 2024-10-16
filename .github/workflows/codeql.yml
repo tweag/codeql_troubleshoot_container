@@ -65,11 +65,18 @@ jobs:
 
     - name: Run sarif-to-comment
       run: |
-        npx @security-alert/sarif-to-comment \
-          --commentUrl "https://github.com/Perdiga/codeql_troubleshoot_container/pull/${{ github.event.number }}" \
-          --sarifContentOwner "Perdiga" \
-          --sarifContentRepo "${{ secrets.repository  }}" \
-          --sarifContentBranch "${{ secrets.head_ref  }}" \
-          "./node-sample-1/results/codeql-results.sarif"
+         npx @security-alert/sarif-to-comment \
+          --commentUrl "$URL" \
+          --sarifContentOwner "$OWNER" \
+          --sarifContentRepo "$REPOSITORY" \
+          --sarifContentBranch "$BRANCH" \
+          "$File"
+          
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN  }}
+        REPOSITORY: "codeql_troubleshoot_container"
+        OWNER: "Perdiga"
+        URL: "https://github.com/Perdiga/codeql_troubleshoot_container/pull/1"
+        BRANCH: "main"
+        File: "./node-sample-1/results/codeql-results.sarif"
+
