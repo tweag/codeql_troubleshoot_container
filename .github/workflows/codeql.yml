@@ -67,7 +67,7 @@ jobs:
       run: |
         npx @security-alert/sarif-to-comment \
           --commentUrl "https://github.com/Perdiga/codeql_troubleshoot_container/pull/${{ github.event.number }}" \
-          --sarifContentOwner "owner" \
+          --sarifContentOwner "Perdiga" \
           --sarifContentRepo "${{ secrets.repository  }}" \
           --sarifContentBranch "${{ secrets.head_ref  }}" \
           "./node-sample-1/results/codeql-results.sarif"
