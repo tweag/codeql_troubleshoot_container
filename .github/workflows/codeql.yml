@@ -60,7 +60,7 @@ jobs:
 
     - name: Post SARIF findings in the pull request
       if: github.event_name == 'pull_request'
-      uses: sett-and-hive/sarif-to-comment-action@v2.19.1
+      uses: sett-and-hive/sarif-to-comment-action@v3.26.13
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         repository: ${{ github.repository }}
