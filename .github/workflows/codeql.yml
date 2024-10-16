@@ -70,7 +70,3 @@ jobs:
           "./codeql/javascript.sarif"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-https://github.com/Perdiga/codeql_troubleshoot_container/pull/1
-
-GITHUB_TOKEN=xxx npx @security-alert/sarif-to-comment --commentUrl "https://github.com/owner/repo/issues/1" --sarifContentOwner "owner" --sarifContentRepo "repo" --sarifContentBranch "master" "./codeql_result.sarif"
