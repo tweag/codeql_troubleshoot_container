@@ -56,7 +56,7 @@ jobs:
     #     output: ./codeql/
 
     - name: List files to verify the file exists
-      run:  ls -lah
+      run:  cd node-sample-1; ls -lah
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
