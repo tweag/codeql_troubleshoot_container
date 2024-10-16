@@ -70,6 +70,6 @@ jobs:
           --sarifContentOwner "owner" \
           --sarifContentRepo "${{ secrets.repository  }}" \
           --sarifContentBranch "${{ secrets.head_ref  }}" \
-          "./node-sample-1/codeql-results.sarif"
+          "./node-sample-1/results/codeql-results.sarif"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
