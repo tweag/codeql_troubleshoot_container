@@ -16,10 +16,6 @@ jobs:
       # required to fetch internal or private CodeQL packs
       packages: read
 
-      # only required for workflows in private repositories
-      actions: read #was this replacing my repo scope????
-      contents: read
-
     strategy:
       fail-fast: false
       matrix:
@@ -56,10 +52,10 @@ jobs:
         output: ./codeql/
 
     - name: List files to verify the file exists
-      run:  ./codeql/; ls -lah
+      run:  cd codeql/; ls -lah
 
     - name: List files to verify the file exists
-      run:  ./codeql/; more javascript.sarif
+      run:  cd codeql/; more javascript.sarif
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
