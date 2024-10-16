@@ -24,13 +24,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: csharp
-          build-mode: none
         - language: javascript-typescript
           build-mode: none
-        - language: python
-          build-mode: none
-       
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -60,10 +56,10 @@ jobs:
         output: ./codeql/
 
     - name: List files to verify the file exists
-        run: cd codeql; ls -lah
+      run: cd codeql; ls -lah
 
     - name: List files to verify the file exists
-        run: cat javascript.sarif
+      run: cat javascript.sarif
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
