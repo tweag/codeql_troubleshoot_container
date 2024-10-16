@@ -57,6 +57,10 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
         upload: "never"
+        output: ./codeql/
+
+    - name: List files to verify the file exists
+        run: ls -lah
 
     - name: Post SARIF findings in the pull request
       if: github.event_name == 'pull_request'
@@ -66,6 +70,6 @@ jobs:
         repository: ${{ github.repository }}
         branch: ${{ github.head_ref }}
         pr-number: ${{ github.event.number }}
-        sarif-file: javascript.sarif
+        sarif-file: ./codeql/javascript.sarif
         title: My security issue
         dry-run: false
