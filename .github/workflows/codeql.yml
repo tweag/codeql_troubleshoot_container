@@ -24,7 +24,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
+        - language: csharp
+          build-mode: none
         - language: javascript-typescript
+          build-mode: none
+        - language: python
           build-mode: none
        
     steps:
@@ -37,8 +41,7 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-        queries: security-extended
-               
+       
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
@@ -55,6 +58,12 @@ jobs:
         category: "/language:${{matrix.language}}"
         upload: "never"
         output: ./codeql/
+
+    - name: List files to verify the file exists
+        run: cd codeql; ls -lah
+
+    - name: List files to verify the file exists
+        run: cat javascript.sarif
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
