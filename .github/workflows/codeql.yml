@@ -41,6 +41,7 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
+        paths: './node-sample copy' 
        
     - if: matrix.build-mode == 'manual'
       shell: bash
@@ -60,7 +61,7 @@ jobs:
         output: ./codeql/
 
     - name: List files to verify the file exists
-      run: ls -lah
+      run: cd codeql; ls -lah
 
     - name: Post SARIF findings in the pull request
       if: github.event_name == 'pull_request'
