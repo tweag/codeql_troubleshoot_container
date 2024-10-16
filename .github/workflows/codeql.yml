@@ -39,7 +39,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
-        upload: "never"
+        #upload: "never"
         output: ./codeql/
 
     - name: List files to verify the file exists
