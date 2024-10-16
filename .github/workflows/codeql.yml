@@ -59,7 +59,7 @@ jobs:
       run: cd codeql; ls -lah
 
     - name: List files to verify the file exists
-      run: cat javascript.sarif
+      run: cd codeql; cat javascript.sarif
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
