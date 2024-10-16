@@ -1,0 +1,21 @@
+{
+	"name": "CodeQL",
+    "build": { "dockerfile": "Dockerfile" },
+    "features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
+	},
+	"customizations": {
+        "extensions": [
+            "ms-vscode-remote.remote-containers"			
+        ],
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+			},
+			"extensions": [
+				"github.vscode-codeql",
+                "MS-SarifVSCode.sarif-viewer"
+			]
+        }
+    }
+  }
