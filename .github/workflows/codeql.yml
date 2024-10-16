@@ -57,7 +57,7 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
         upload: "never"
-        output: results.sarif
+        output: /results.sarif
 
     - name: Post SARIF findings in the pull request
       if: github.event_name == 'pull_request'
@@ -67,6 +67,6 @@ jobs:
         repository: ${{ github.repository }}
         branch: ${{ github.head_ref }}
         pr-number: ${{ github.event.number }}
-        sarif-file: results.sarif
+        sarif-file: /results.sarif
         title: My security issue
         dry-run: false
