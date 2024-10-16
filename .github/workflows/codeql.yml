@@ -41,8 +41,7 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-        paths: './node-sample copy' 
-       
+               
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
