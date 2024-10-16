@@ -66,5 +66,5 @@ jobs:
         repository: ${{ github.repository }}
         branch: ${{ github.head_ref }}
         pr-number: ${{ github.event.number }}
-        sarif-file: ./codeql/javascript.sarif
+        sarif-file: "./codeql/javascript.sarif"
         title: My security issues
