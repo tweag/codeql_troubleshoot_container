@@ -37,6 +37,7 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
+        queries: security-extended
                
     - if: matrix.build-mode == 'manual'
       shell: bash
@@ -58,7 +59,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16' 
+        node-version: 'latest' 
 
     - name: Run sarif-to-comment
       run: |
