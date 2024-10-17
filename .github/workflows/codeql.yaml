@@ -39,4 +39,4 @@ jobs:
         category: "/language:${{matrix.language}}"
         upload: "never"
         output: ./codeql/${{matrix.language}}
-
+  
