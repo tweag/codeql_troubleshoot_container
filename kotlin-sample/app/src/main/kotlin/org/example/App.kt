@@ -3,6 +3,11 @@
  */
 package org.example
 
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.ResultSet
+import java.sql.Statement
+
 class App {
     val greeting: String
         get() {
@@ -10,6 +15,43 @@ class App {
         }
 }
 
+fun getUserData(userId: String): ResultSet? {
+    var resultSet: ResultSet? = null
+    var connection: Connection? = null
+    var statement: Statement? = null
+    
+    try {
+        // Create a connection to the database (replace with your DB credentials)
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydatabase", "user", "password")
+
+        // Create a statement
+        statement = connection.createStatement()
+
+        // Vulnerable query (user input directly inserted into SQL query, leading to SQL injection)
+        val query = "SELECT * FROM users WHERE id = '$userId'"
+
+        // Execute the query
+        resultSet = statement.executeQuery(query)
+
+    } catch (e: Exception) {
+        e.printStackTrace()
+    } finally {
+        statement?.close()
+        connection?.close()
+    }
+
+    return resultSet
+}
+
 fun main() {
-    println(App().greeting)
+      // Example input that could be used for SQL injection
+    val userId = "1 OR 1=1"
+    val resultSet = getUserData(userId)
+
+    // Process the result set
+    resultSet?.let {
+        while (it.next()) {
+            println("User ID: ${it.getString("id")}, Name: ${it.getString("name")}")
+        }
+    }
 }
