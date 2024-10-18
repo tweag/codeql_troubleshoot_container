@@ -39,7 +39,7 @@ jobs:
     - name: Build Project
       shell: bash
       run: |
-        cd kotlin-sample; gradle build -Dorg.gradle.jvmargs=-Xmx2g --info
+        cd kotlin-sample; gradle build --info
       
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
