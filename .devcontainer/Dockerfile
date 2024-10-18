@@ -3,12 +3,13 @@ FROM ubuntu:22.04 AS codeql_base
 # # tzdata install needs to be non-interactive
 # ENV DEBIAN_FRONTEND=noninteractive
 
-ARG USERNAME=codeql
+ARG USERNAME=root
 ARG CODEQL_HOME=/usr/local/codeql-home
 
 # create user, install/update basics and python
-RUN adduser --home ${CODEQL_HOME} ${USERNAME} && \
-    apt-get update && \
+RUN mkdir ${CODEQL_HOME}
+
+RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         software-properties-common \
@@ -30,7 +31,8 @@ RUN adduser --home ${CODEQL_HOME} ${USERNAME} && \
         gcc \
         apt-utils \
         && \
-        apt-get clean
+        apt-get clean \
+        docker-cli
 
 # Install Go
 ARG GOVER=1.21.5
