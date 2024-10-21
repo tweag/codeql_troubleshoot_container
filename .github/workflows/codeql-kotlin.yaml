@@ -1,4 +1,4 @@
-name: "CodeQL Advanced"
+name: "CodeQL Advanced - Kotlin"
 
 on:
   pull_request:
@@ -9,9 +9,9 @@ on:
   
 
 jobs:
-  analyze:
-    name: Analyze (${{ matrix.language }})
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+  analyze-kotlin:
+    name: Analyze Kotlin
+    runs-on: 'ubuntu-latest'
     permissions:
       actions: write
       contents: read
@@ -22,8 +22,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: javascript
-          build-mode: none
+        - language: java-kotlin
+          build-mode: manual
 
     steps:
     - name: Checkout repository
@@ -33,9 +33,14 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: javascript
+        languages: java-kotlin
         queries: security-extended
        
+    - name: Build Project
+      shell: bash
+      run: |
+        cd kotlin-sample; gradle build --info
+      
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
