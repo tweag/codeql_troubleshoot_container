@@ -1,0 +1,57 @@
+name: "CodeQL CLI Analysis"
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  analyze-cli:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Java (required for CodeQL CLI)
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: Install CodeQL CLI
+      run: |
+        CODEQL_VERSION="2.19.1"
+        curl -OL https://github.com/github/codeql-action/releases/download/codeql-bundle-v${CODEQL_VERSION}/codeql-bundle-linux64.tar.gz && \
+        tar -xvf codeql-bundle-linux64.tar.gz
+        sudo mv codeql /usr/local/bin/
+        echo "/usr/local/bin/codeql" >> $GITHUB_PATH
+
+        echo "CodeQL installed"
+
+    - name: Initialize CodeQL database
+      run: |
+        codeql database create codeql-db --language=java-kotlin --command='gradle build -Dorg.gradle.jvmargs=-Xmx2g --info' --source-root=node-sample
+        echo "CodeQL database initialized"
+
+    - name: Run CodeQL analysis
+      run: |
+        codeql database analyze codeql-db \
+          --format=sarif-latest \
+          --output=results.sarif \
+
+    # - name: Run sarif-to-comment
+    #   run: |
+    #     OWNER=$(echo "$REPOSITORY" | awk -F[/] '{print $1}')
+    #     REPO=$(echo "$REPOSITORY" | awk -F[/] '{print $2}')
+
+    #     npx @security-alert/sarif-to-comment \
+    #       --commentUrl "$URL" \
+    #       --sarifContentOwner "$OWNER" \
+    #       --sarifContentRepo "$REPOSITORY" \
+    #       --sarifContentBranch "$BRANCH" \
+    #       "$File"
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     REPOSITORY: "${{ github.repository }}"
+    #     #OWNER: "Perdiga"
+    #     URL: "https://github.com/${{ github.repository }}/pull/${{ github.event.number }}"
+    #     BRANCH: ${{ github.head_ref }}
+    #     File: "./results.sarif"
