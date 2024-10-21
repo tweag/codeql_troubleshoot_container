@@ -138,7 +138,11 @@ do_analyze() {
 
     print_yellow "Creating the CodeQL database. This might take some time depending on the size of the project..."
     print_blue   "DEBUG: codeql database create --overwrite --language=${LANGUAGE} -s ${SRC_DIR} ${results_dir}/codeql-db"
-    codeql database create --overwrite --language=${LANGUAGE} -s ${SRC_DIR} ${results_dir}/codeql-db
+    
+    #export GRADLE_OPTS="-Xmx2g"
+    #codeql database create --overwrite --language=${LANGUAGE} -s ${SRC_DIR} ${results_dir}/codeql-db  --command='gradle build --info' 
+
+    codeql database create --overwrite --language=${LANGUAGE} -s ${SRC_DIR} ${results_dir}/codeql-db  
 
     if [ $? -eq 0 ]
     then
@@ -161,7 +165,7 @@ do_analyze() {
     else
         print_yellow "\nRunning the ${QUERIES} rules on the project..."
         print_blue   "DEBUG: codeql database analyze --format=${OUTPUT_FORMAT} --output=${output_file} ${results_dir}/codeql-db ${LANGUAGE}-${QUERY_SUITES}.qls"
-        codeql database analyze --format=${OUTPUT_FORMAT} --output=${output_file} ${results_dir}/codeql-db ${LANGUAGE}-${QUERY_SUITES}.qls
+        codeql database analyze --format=${OUTPUT_FORMAT} --output=${output_file} ${results_dir}/codeql-db ${LANGUAGE}-${QUERY_SUITES}.qls 
     fi
 
     if [ $? -eq 0 ]
