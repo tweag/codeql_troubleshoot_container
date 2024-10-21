@@ -139,6 +139,8 @@ do_analyze() {
     print_yellow "Creating the CodeQL database. This might take some time depending on the size of the project..."
     print_blue   "DEBUG: codeql database create --overwrite --language=${LANGUAGE} -s ${SRC_DIR} ${results_dir}/codeql-db"
     
+
+    #Uncomment the following line if you want to increase the memory for the CodeQL database creation when analyzing kotlin projects
     #export GRADLE_OPTS="-Xmx2g"
     #codeql database create --overwrite --language=${LANGUAGE} -s ${SRC_DIR} ${results_dir}/codeql-db  --command='gradle build --info' 
 

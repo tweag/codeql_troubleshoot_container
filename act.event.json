@@ -1,0 +1,14 @@
+{
+    "pull_request": {
+      "head": {
+        "ref": "main"
+      },
+      "base": {
+        "ref": "main"
+      },
+      "repository": {
+        "full_name": "Perdiga/codeql_troubleshoot_container"
+      }
+    },
+    "number": 4
+  }
