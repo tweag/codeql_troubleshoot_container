@@ -67,6 +67,9 @@ RUN cd /tmp && \
     rm /tmp/codeql-bundle-linux64.tar.gz
 
     
+RUN echo 'alias act_on="act --var-file act.variables --secret-file my.secrets -e act.event.json -s GITHUB_TOKEN=\"$(gh auth token)\" "' >> ~/.bashrc 
+RUN echo 'alias act_off="act --action-offline-mode --var-file act.variables --secret-file my.secrets -e act.event.json -s GITHUB_TOKEN=\"$(gh auth token)\" "' >> ~/.bashrc
+
 ENV CODEQL_HOME=${CODEQL_HOME}
 ENV PYTHONIOENCODING=utf-8
 ENV PATH="/usr/local/go/bin:${PATH}"
