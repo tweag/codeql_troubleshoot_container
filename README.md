@@ -1,99 +1,99 @@
-# CodeQL troubleshooting container
 
-The aim of this repository is to create a workspace where you can test CodeQL in various scenarios without having to install too many tools on your machine.
+# CodeQL Troubleshooting Container
 
-In order to run this project you need to have `Docker` and `VSCode` installed on your machine
+This repository provides a pre-configured workspace to test CodeQL in various scenarios without the need for extensive tool installation on your local machine. It uses Docker and VSCode's devcontainers to create a fully equipped environment for code analysis and development.
 
-It uses `devcontainers` to create a workspace with all the tools needed to create/build code. It also has the CodeQL CLI installed so that you can run code analysis.
+## Prerequisites
 
-The main folder is `script` where you'll find a small helper for running CodeQL.
+Ensure you have the following installed on your machine before running this project:
 
-```
-Usage: run-codeql.sh <command> [options]
-```
+- [Docker](https://www.docker.com/get-started)
+- [VSCode](https://code.visualstudio.com/download)
 
-To make execution easier, each folder has a `run.sh` with the commands already created so that you can just run the file.
+## Features
 
-This devcontainer is configured with some VSCode extensions such as `MS-SarifVSCode.sarif-viewer` which will allow you to view the result file. 
+- **Devcontainers**: A development environment with all required tools, including the CodeQL CLI, to run code analysis.
+- **CodeQL CLI**: Pre-installed for analyzing code.
+- **VSCode Extensions**: Includes extensions like `MS-SarifVSCode.sarif-viewer` for viewing CodeQL results.
 
-All devcontainers has a feature that enable you to run a github action locally. The name of this feature is Act and you can see how to use it bellow.
+### Folder Structure
+- **`/.devcontainers`**: Contains a specification of a devcontainer for each language environment.
+- **`/script`**: Contains a helper script for running CodeQL analyses.
+  
+  **Usage**: 
+  ```bash
+  ./run-codeql.sh <command> [options]
+  ```
 
-# Code QL
-## Query Suite
+  Each folder contains a `run.sh` file with predefined commands, making it easier to execute without manually specifying them.
 
-Check [CodeQL query suites](https://docs.github.com/en/code-security/code-scanning/managing-your-code-scanning-configuration/javascript-typescript-built-in-queries) for more information
+## CodeQL Query Suites
 
-### default
-- The default query suite is the group of queries run by default in CodeQL code scanning on GitHub.
+CodeQL allows you to use different query suites depending on the level of precision and coverage you require:
 
-- The queries in the default query suite are highly precise and return few false positive code scanning results. Relative to the security-extended query suite, the default suite returns fewer low-confidence code scanning results.
+- **Default**: Highly precise queries with minimal false positives, used for standard GitHub code scanning.
+- **Security-Extended**: Expands on the default suite with more security-related queries, but may introduce additional false positives.
+- **Security-and-Quality**: Includes both security queries and additional maintainability and reliability checks.
 
-- This query suite is available for use with default setup for code scanning.
+For more information on CodeQL query suites, check [this documentation](https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/about-codeql).
 
-### security-extended
-- The security-extended query suite consists of all the queries in the default query suite, plus additional queries with slightly lower precision and severity.
+## Known Limitations
 
-- Relative to the default query suite, the security-extended suite may return a greater number of false positive code scanning results.
+- **`--db-cluster` Option**: This repository only supports analyzing one language per scan. Attempts to use `--db-cluster` were unsuccessful.
+- **`--command` Option**: The current script doesn't support passing the `--command` argument directly. If needed, you can modify `scripts/run-codeql.sh` to customize the CodeQL CLI call.
 
-- This query suite is available for use with default setup for code scanning, and is referred to as the "Extended" query suite on GitHub.
+## Running GitHub Actions Locally with Act
 
-### security-and-quality
-- The security-extended query suite consists of all the queries in the default query suite and security-extended, plus extra maintainability and reliability queries.
- 
-## Limitations
+This repository is configured to allow running GitHub Actions locally using [Act](https://github.com/nektos/act).
 
-## --db-cluster
+### Act Setup
 
-When using the CodeQL CLI on thsi repository, you will only be able to analyze one language per scan. I tried to use --db-cluster but I was not able to make it run. As I will not need it now I did not tried to fix it. 
+To simulate GitHub events, secrets, and variables, the following files are provided:
 
-## --command
+- **`act.event.json`**: Simulates GitHub events (e.g., pull requests, merges).
+- **`act.secrets`**: Mimics repository secrets.
+- **`act.variables`**: Simulates repository variables.
 
-My script is not prepared to receive the --command and send it to the CodeQL CLI. So if you need this feature you can implement it or you can change the `scripts/run-codeql.sh` file and customize the `init` call with the command that you need.
+### Common Act Commands
 
-# Act
+1. **Run all GitHub Actions:**
+   ```bash
+   act
+   ```
 
-Act allow you to run a github action locally. Click [here](https://nektosact.com/introduction.html) to learn more about this tool.
+2. **Run a specific GitHub Action workflow:**
+   ```bash
+   act -W '.github/workflows/codeql.yaml'
+   ```
 
-## How to use it 
+3. **Run a specific Action with secrets, variables, and event files:**
+   ```bash
+   act --var-file act.variables --secret-file act.secrets -e act.event.json -W '.github/workflows/codeql.yaml'
+   ```
 
-This repository has three files that will be used by Act: 
+4. **Enable offline mode for faster execution with cached actions and containers:**
+   ```bash
+   act --action-offline-mode
+   ```
 
-- `act.event.json`: This simulates a github event such as PR, Merge and others
-- `act.secrets`: This simulates the github repository secrets
-- `act.variables`: This simulates the github repository variables
+5. **Run an action with a valid GitHub token (via GitHub CLI):**
+   ```bash
+   act -s GITHUB_TOKEN="$(gh auth token)" -W '.github/workflows/codeql.yaml'
+   ```
 
-The most used command are:
+6. **Use a Personal Access Token (PAT):**
+   ```bash
+   act -s GITHUB_TOKEN=<Your_token_here> -W '.github/workflows/codeql.yaml'
+   ```
 
-```
-# Executes all Actions
-act
+### Useful Aliases
 
-# Execute a specified Action 
-act -W '.github/workflows/codeql.yaml'
+To simplify command execution, you can define the following aliases:
 
-# Execute a specified Action using the variable, secrets and event files
-act --var-file act.variables --secret-file my.secrets  -e event.json  -W '.github/workflows/codeql.yaml'
+```bash
+# Offline mode with variables, secrets, and event files:
+alias act_off='act --action-offline-mode --var-file act.variables --secret-file act.secrets -e act.event.json -s GITHUB_TOKEN="$(gh auth token)" -W ".github/workflows/codeql.yaml"'
 
-# If you want to speed up running act and using cached actions and container images you can enable this mode
-act --action-offline-mode
-
-# Some actions will interact with github and you will need to provide a valid github token 
-# You can use the github cli. Make sure to login into github (`gh auth login`) before running the command 
-act -s GITHUB_TOKEN="$(gh auth token)"
-
-# You can use a PAT token
-act -s GITHUB_TOKEN=<Your_token_here> -W '.github/workflows/codeql.yaml'
-
-```
-
-To facilitate, you can use some alias:
-
-````
-
-# act --action-offline-mode --var-file act.variables --secret-file my.secrets -e event.json -s GITHUB_TOKEN="$(gh auth token)" -W '.github/workflows/codeql.yaml'
-act_off -W '.github/workflows/codeql.yaml'
-
-# act --var-file act.variables --secret-file my.secrets -e event.json -s GITHUB_TOKEN="$(gh auth token)" -W '.github/workflows/codeql.yaml'
-act_on -W '.github/workflows/codeql.yaml'
-
+# Standard mode with variables, secrets, and event files:
+alias act_on='act --var-file act.variables --secret-file act.secrets -e act.event.json -s GITHUB_TOKEN="$(gh auth token)" -W ".github/workflows/codeql.yaml"'
 ```

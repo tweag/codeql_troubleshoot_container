@@ -1,2 +1,4 @@
 */results/codeql-db/*
 act.*
+csharp-sample/bin
+csharp-sample/obj
