@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: javascript
+        - language: csharp
           build-mode: none
 
     steps:
@@ -33,7 +33,7 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: javascript
+        languages: csharp
         queries: security-extended
        
     - name: Perform CodeQL Analysis
