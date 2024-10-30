@@ -1,4 +1,4 @@
-name: "CodeQL Advanced"
+name: "CodeQL Advanced - Kotlin"
 
 on:
   pull_request:
