@@ -1,7 +1,17 @@
 name: "CodeQL CLI Analysis"
 on:
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      sample:
+        description: 'Sample to analyze'
+        required: true
+        default: 'node-sample'
+        type: choice
+        options:
+        - csharp-sample
+        - kotlin-sample
+        - node-sample
+        - python-sample
 
 jobs:
   analyze-cli:
@@ -10,11 +20,18 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Java (required for CodeQL CLI)
+    - name: Set up Java 
       uses: actions/setup-java@v4
+      if: ${{ inputs.sample == 'kotlin-sample' }}
       with:
         distribution: 'temurin'
         java-version: '21'
+
+    - name: Set up dotnet
+      uses: actions/setup-dotnet@v4
+      if: ${{ inputs.sample == 'csharp-sample' }}
+      with:
+        dotnet-version: '8.0.x'
 
     - name: Install CodeQL CLI
       run: |
@@ -28,7 +45,16 @@ jobs:
 
     - name: Initialize CodeQL database
       run: |
-        codeql database create codeql-db --language=javascript --source-root=node-sample
+        if [ "${{ inputs.sample }}" = "node-sample" ]; then
+          codeql database create codeql-db --overwrite --language=javascript --source-root=${{ inputs.sample }}
+        elif [ "${{ inputs.sample }}" = "csharp-sample" ]; then
+          codeql database create codeql-db --overwrite --language=csharp --source-root=${{ inputs.sample }} --command="dotnet build"
+        elif [ "${{ inputs.sample }}" = "kotlin-sample" ]; then
+          codeql database create codeql-db --overwrite --language=java-kotlin --source-root=${{ inputs.sample }}
+        elif [ "${{ inputs.sample }}" = "python-sample" ]; then
+          codeql database create codeql-db --overwrite --language=python --source-root=${{ inputs.sample }}
+        fi 
+
         echo "CodeQL database initialized"
 
     - name: Run CodeQL analysis
@@ -37,21 +63,21 @@ jobs:
           --format=sarif-latest \
           --output=results.sarif \
 
-    - name: Run sarif-to-comment
-      run: |
-        OWNER=$(echo "$REPOSITORY" | awk -F[/] '{print $1}')
-        REPO=$(echo "$REPOSITORY" | awk -F[/] '{print $2}')
+    # - name: Run sarif-to-comment
+    #   run: |
+    #     OWNER=$(echo "$REPOSITORY" | awk -F[/] '{print $1}')
+    #     REPO=$(echo "$REPOSITORY" | awk -F[/] '{print $2}')
 
-        npx @security-alert/sarif-to-comment \
-          --commentUrl "$URL" \
-          --sarifContentOwner "$OWNER" \
-          --sarifContentRepo "$REPOSITORY" \
-          --sarifContentBranch "$BRANCH" \
-          "$File"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        REPOSITORY: "${{ github.repository }}"
-        #OWNER: "Perdiga"
-        URL: "https://github.com/${{ github.repository }}/pull/${{ github.event.number }}"
-        BRANCH: ${{ github.head_ref }}
-        File: "./results.sarif"
+    #     npx @security-alert/sarif-to-comment \
+    #       --commentUrl "$URL" \
+    #       --sarifContentOwner "$OWNER" \
+    #       --sarifContentRepo "$REPOSITORY" \
+    #       --sarifContentBranch "$BRANCH" \
+    #       "$File"
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     REPOSITORY: "${{ github.repository }}"
+    #     #OWNER: "Perdiga"
+    #     URL: "https://github.com/${{ github.repository }}/pull/${{ github.event.number }}"
+    #     BRANCH: ${{ github.head_ref }}
+    #     File: "./results.sarif"
