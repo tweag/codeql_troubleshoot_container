@@ -1,19 +1,32 @@
 name: "CodeQL Advanced"
 
 on:
-  pull_request:
-    branches: [ "main" ]
-  push:
-    branches:
-      - main
-  
+  workflow_dispatch:
+    inputs:
+      language:
+        description: 'language to analyze'
+        required: true
+        default: 'node-sample'
+        type: choice
+        options:
+        - javascript
+        - java-kotlin
+        - python
+        - csharp
+      query_suite:
+        description: 'query suite'
+        required: true
+        default: 'security-extended'
+        type: choice
+        options:
+        - security-extended
 
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
     runs-on: 'ubuntu-latest' 
     permissions:
-      actions: write
+      actions: read
       contents: read
       packages: read
       security-events: write
@@ -22,23 +35,39 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: javascript
+        - language: ${{inputs.language}}
           build-mode: none
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Set up Java 
+      uses: actions/setup-java@v4
+      if: ${{ inputs.language == 'java-kotlin' }}
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: Set up dotnet
+      uses: actions/setup-dotnet@v4
+      if: ${{ inputs.language == 'csharp' }}
+      with:
+        dotnet-version: '8.0.x'
+
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: javascript
-        queries: security-extended
-       
+        languages: ${{ matrix.language }}
+        queries: ${{inputs.query_suite}}
+        debug: true
+
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
+        upload: never
         category: "/language:${{matrix.language}}"
+        debug: true
         
   

@@ -25,7 +25,7 @@ Ensure you have the following installed on your machine before running this proj
   ./run-codeql.sh <command> [options]
   ```
 
-  Each folder contains a `run.sh` file with predefined commands, making it easier to execute without manually specifying them.
+Each folder contains a `run.sh` file with predefined commands, making it easier to execute without manually specifying them.
 
 ## CodeQL Query Suites
 
@@ -46,54 +46,4 @@ For more information on CodeQL query suites, check [this documentation](https://
 
 This repository is configured to allow running GitHub Actions locally using [Act](https://github.com/nektos/act).
 
-### Act Setup
-
-To simulate GitHub events, secrets, and variables, the following files are provided:
-
-- **`act.event.json`**: Simulates GitHub events (e.g., pull requests, merges).
-- **`act.secrets`**: Mimics repository secrets.
-- **`act.variables`**: Simulates repository variables.
-
-### Common Act Commands
-
-1. **Run all GitHub Actions:**
-   ```bash
-   act
-   ```
-
-2. **Run a specific GitHub Action workflow:**
-   ```bash
-   act -W '.github/workflows/codeql.yaml'
-   ```
-
-3. **Run a specific Action with secrets, variables, and event files:**
-   ```bash
-   act --var-file act.variables --secret-file act.secrets -e act.event.json -W '.github/workflows/codeql.yaml'
-   ```
-
-4. **Enable offline mode for faster execution with cached actions and containers:**
-   ```bash
-   act --action-offline-mode
-   ```
-
-5. **Run an action with a valid GitHub token (via GitHub CLI):**
-   ```bash
-   act -s GITHUB_TOKEN="$(gh auth token)" -W '.github/workflows/codeql.yaml'
-   ```
-
-6. **Use a Personal Access Token (PAT):**
-   ```bash
-   act -s GITHUB_TOKEN=<Your_token_here> -W '.github/workflows/codeql.yaml'
-   ```
-
-### Useful Aliases
-
-To simplify command execution, you can define the following aliases:
-
-```bash
-# Offline mode with variables, secrets, and event files:
-alias act_off='act --action-offline-mode --var-file act.variables --secret-file act.secrets -e act.event.json -s GITHUB_TOKEN="$(gh auth token)" -W ".github/workflows/codeql.yaml"'
-
-# Standard mode with variables, secrets, and event files:
-alias act_on='act --var-file act.variables --secret-file act.secrets -e act.event.json -s GITHUB_TOKEN="$(gh auth token)" -W ".github/workflows/codeql.yaml"'
-```
+Each folder contains a `run.sh` file with predefined commands, making it easier to execute without manually specifying them.
