@@ -61,13 +61,9 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         queries: ${{inputs.query_suite}}
-        debug: true
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
         upload: never
         category: "/language:${{matrix.language}}"
-        debug: true
-        
-  
