@@ -3,3 +3,5 @@ act.*
 csharp-sample/bin
 csharp-sample/obj
 *.sln
+.gradle
+.kotlin
