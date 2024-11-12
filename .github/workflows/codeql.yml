@@ -14,6 +14,16 @@ name: "CodeQL Advanced PR"
 on:
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      query_suite:
+          description: 'query suite'
+          required: true
+          default: 'security-extended'
+          type: choice
+          options:
+          - security-extended
+          - security-and-quality
 
 jobs:
   analyze:
@@ -67,6 +77,11 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
+        queries: ${{ inputs.query_suite }}
+
+        # security-extended: queries from default, plus extra security queries with slightly lower precision and severity.
+        # security-and-quality: queries from default, security-extended, plus extra maintainability and reliability queries.
+        
         # If you wish to specify custom queries, you can do so here or in a config file.
         # By default, queries listed here will override any specified in a config file.
         # Prefix the list here with "+" to use these queries and those in the config file.
@@ -80,7 +95,7 @@ jobs:
     # to build your code.
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-    - if: matrix.build-mode == 'manual'
+    - if: matrix.build-mode == 'manual' && matrix.language == 'c-cpp'
       shell: bash
       run: |
         cd ./cpp-sample
