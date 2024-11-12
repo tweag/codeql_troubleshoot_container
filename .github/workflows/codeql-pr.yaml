@@ -14,16 +14,6 @@ name: "CodeQL Advanced PR"
 on:
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch:
-    inputs:
-      query_suite:
-          description: 'query suite'
-          required: true
-          default: 'security-extended'
-          type: choice
-          options:
-          - security-extended
-          - security-and-quality
 
 jobs:
   analyze:
@@ -77,7 +67,7 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-        queries: ${{ inputs.query_suite }}
+        queries: 'security-and-quality'
 
         # security-extended: queries from default, plus extra security queries with slightly lower precision and severity.
         # security-and-quality: queries from default, security-extended, plus extra maintainability and reliability queries.
@@ -109,3 +99,28 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+        
+        # Upload the SARIF file to Code Scanning.
+        # Defaults to 'always' which uploads the SARIF file to Code Scanning for successful and failed runs.
+        # 'failure-only' only uploads debugging information to Code Scanning if the workflow run fails, for users post-processing the SARIF file before uploading it to Code Scanning.
+        # 'never' avoids uploading the SARIF file to Code Scanning, even if the code scanning run fails. This is not recommended for external users since it complicates debugging.
+        # default: "always"
+        upload: always
+
+        # "Level of cleanup to perform on CodeQL databases at the end of the analyze step. This should either be 'none' to skip cleanup, or be a valid argument for the --cache-cleanup flag of the CodeQL CLI command 'codeql database cleanup' as documented at https://codeql.github.com/docs/codeql-cli/manual/database-cleanup"
+        # default: "brutal"
+        cleanup-level: "brutal"
+
+        # The amount of memory in MB that can be used by CodeQL for database finalization and query execution.
+        # By default, this action will use the same amount of memory as previously set in the "init" action.
+        # If the "init" action also does not have an explicit "ram" input, this action will use most of the
+        # memory available in the system (which for GitHub-hosted runners is 6GB for Linux, 5.5GB for Windows,
+        # and 13GB for macOS)
+        # ram: 6000
+
+        # The number of threads that can be used by CodeQL for database finalization and query execution.
+        # By default, this action will use the same number of threads as previously set in the "init" action.
+        # If the "init" action also does not have an explicit "threads" input, this action will use all the
+        # hardware threads available in the system (which for GitHub-hosted runners is 2 for Linux and Windows
+        # and 3 for macOS).
+        #threads : 2
