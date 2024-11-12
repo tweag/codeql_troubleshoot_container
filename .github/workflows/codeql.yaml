@@ -63,6 +63,16 @@ jobs:
         languages: ${{ matrix.language }}
         queries: ${{inputs.query_suite}}
 
+    - name: Build
+      shell: bash
+      run: |
+          cd ./c_cpp_poc
+          mkdir build
+          cd build
+          cmake ..
+          make
+          # ./hello_world
+          
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
